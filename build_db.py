@@ -18,12 +18,19 @@ CLS_SLOT = {
     "c41": ("Jewelry", "Amulet"), "c42": ("Relic", "Relic"), "c43": ("Relic", "Relic"),
 }
 EXP_NAME = {"gdx1": "Ashes of Malmouth", "gdx2": "Forgotten Gods", "gdx3": "Fangs of Asterkarn"}
+# Faction ID → display name. Sourced from grimtools l10n_en.js tagFactionUser<N>
+# + tagFactionSurvivors (Survivors = Devil's Crossing base-game faction).
+# Cross-checked via augment.factionSource field in augments_parsed.json:
+#   f1←User7, f2←User0, f3←User4, f4←User2, f5←User8, f6←User5,
+#   f7←Survivors, f8←User9, f9←User10, f10←User11, f11←User13,
+#   f12←User14, f13←User15, f15←User17.
+# f14 is reserved (no augments use it) — kept for forward-compat.
 FACTION = {
-    "f1": "Devil's Crossing", "f2": "Kymon's Chosen", "f3": "The Outcast", "f4": "House of Valor",
-    "f5": "The Order of Death's Vigil", "f6": "The Circle of Cunning", "f7": "The Beastmaster's Treasure",
-    "f8": "The Coven of Ugdenbog", "f9": "The Black Legion", "f10": "The Scholars of Luminerr",
-    "f11": "The Sentinels of Stone", "f12": "The Eternal Band", "f13": "The Bodukon's Wrath",
-    "f14": "The Shrine of the Dread", "f15": "The Faction of Asterkarn",
+    "f1": "The Black Legion", "f2": "Rovers", "f3": "The Outcast", "f4": "Homestead",
+    "f5": "Kymon's Chosen", "f6": "Order of Death's Vigil", "f7": "Devil's Crossing",
+    "f8": "Coven of Ugdenbog", "f9": "Barrowholm", "f10": "Malmouth Resistance",
+    "f11": "Cult of Bysmiel", "f12": "Cult of Dreeg", "f13": "Cult of Solael",
+    "f14": "Shrine of the Dread", "f15": "Kurn",
 }
 REP_TIER = {"tagFactionStateFriend1": "Friendly I", "tagFactionStateFriend4": "Friendly IV",
             "tagFactionStateFriend5": "Friendly V"}

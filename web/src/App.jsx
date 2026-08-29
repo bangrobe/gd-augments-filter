@@ -5,11 +5,14 @@ import AugmentCard from './components/AugmentCard.jsx';
 import AugmentModal from './components/AugmentModal.jsx';
 
 const PAGE_SIZE = 60;
+// Faction ID → display name. Single source of truth in build_db.py: FACTION.
+// Kept in sync with grimtools l10n_en.js tagFactionUser<N> / tagFactionSurvivors.
 const FACTION_NAME = {
-  f1: "Devil's Crossing", f2: "Kymon's Chosen", f3: "The Outcast", f4: "House of Valor",
-  f5: "Order of Death's Vigil", f6: "Circle of Cunning", f7: "Beastmaster's Treasure", f8: "Coven of Ugdenbog",
-  f9: "Black Legion", f10: "Scholars of Luminerr", f11: "Sentinels of Stone", f12: "Eternal Band",
-  f13: "Bodukon's Wrath", f14: "Shrine of the Dread", f15: "Faction of Asterkarn",
+  f1: "The Black Legion", f2: "Rovers", f3: "The Outcast", f4: "Homestead",
+  f5: "Kymon's Chosen", f6: "Order of Death's Vigil", f7: "Devil's Crossing",
+  f8: "Coven of Ugdenbog", f9: "Barrowholm", f10: "Malmouth Resistance",
+  f11: "Cult of Bysmiel", f12: "Cult of Dreeg", f13: "Cult of Solael",
+  f14: "Shrine of the Dread", f15: "Kurn",
 };
 const DMG_TYPES = ['Physical', 'Fire', 'Cold', 'Lightning', 'Poison', 'Aether', 'Chaos', 'Pierce', 'Vitality', 'Elemental', 'Bleeding'];
 const DEFAULT_FILTER = { q: '', slot: [], rarity: [], exp: [], faction: [], ilvl: '', stat: '', type: [], dir: [] };
