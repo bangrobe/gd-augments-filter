@@ -48,7 +48,11 @@ export default {
     close: 'Đóng',
     readMore: 'Đọc toàn bộ',
     readLess: 'Thu gọn',
-    petBonusHdr: 'PET BONUS (Bonus to All Pets)',
+    petBonusHdr: 'ƯU ĐÃI PET (Bonus cho tất cả Pet)',
+  },
+  filter: {
+    all: 'Tất cả',
+    filterBtn: '☰ Bộ lọc',
   },
   card: {
     moreStats: '+{n} chỉ số khác — mở để xem',

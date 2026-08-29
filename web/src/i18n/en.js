@@ -50,6 +50,10 @@ export default {
     readLess: 'Collapse',
     petBonusHdr: 'PET BONUS (Bonus to All Pets)',
   },
+  filter: {
+    all: 'All',
+    filterBtn: '☰ Filter',
+  },
   card: {
     moreStats: '+{n} more stats — open to view',
     reqLevel: 'Required level: {n}',

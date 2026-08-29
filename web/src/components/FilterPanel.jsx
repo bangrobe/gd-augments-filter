@@ -82,7 +82,7 @@ export default function FilterPanel({ f, setF, opts, onClose }) {
           onChange={update('ilvl')}
           className="w-full px-2.5 py-1.5 bg-zinc-950 border border-grim-border rounded-md text-sm focus:outline-none focus:border-grim-accent"
         >
-          <option value="">All</option>
+          <option value="">{t('filter.all')}</option>
           {opts.ilvl.map((o) => <option key={o} value={o}>{o}</option>)}
         </select>
       </Section>

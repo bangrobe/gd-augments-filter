@@ -99,7 +99,7 @@ export default function App() {
             className="md:hidden px-3 py-1.5 rounded-md border border-grim-border bg-grim-card text-sm"
             onClick={() => setShowFilters((s) => !s)}
           >
-            {showFilters ? '✕' : '☰ Filter'}
+            {showFilters ? '✕' : t('filter.filterBtn')}
           </button>
           <button
             className="px-3 py-1.5 rounded-md border border-grim-border bg-grim-card font-semibold hover:border-grim-accent transition"
