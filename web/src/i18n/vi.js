@@ -32,7 +32,7 @@ export default {
     retaliation: 'Phản damage (retaliation)',
   },
   rarity: { Magical: 'Magical', Rare: 'Rare', Epic: 'Epic', Legendary: 'Legendary' },
-  expansionName: { gdx1: 'Ashes of Malmouth', gdx2: 'Forgotten Gods', gdx3: 'Fangs of Asterkarn' },
+  expansionName: { base: 'Game gốc', gdx1: 'Ashes of Malmouth', gdx2: 'Forgotten Gods', gdx3: 'Fangs of Asterkarn' },
   dmgt: { Physical: 'Vật lý', Fire: 'Lửa', Cold: 'Băng', Lightning: 'Sét', Poison: 'Độc', Aether: 'Aether', Chaos: 'Hỗn mang', Pierce: 'Xuyên giáp', Vitality: 'Sinh lực', Elemental: 'Nguyên tố', Bleeding: 'Chảy máu' },
   dirShort: { damage: '+Dmg', resist: '+Res', retaliation: 'Ret' },
   modal: {

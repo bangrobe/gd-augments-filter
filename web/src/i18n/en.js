@@ -32,7 +32,7 @@ export default {
     retaliation: 'Retaliate damage',
   },
   rarity: { Magical: 'Magical', Rare: 'Rare', Epic: 'Epic', Legendary: 'Legendary' },
-  expansionName: { gdx1: 'Ashes of Malmouth', gdx2: 'Forgotten Gods', gdx3: 'Fangs of Asterkarn' },
+  expansionName: { base: 'Base Game', gdx1: 'Ashes of Malmouth', gdx2: 'Forgotten Gods', gdx3: 'Fangs of Asterkarn' },
   dmgt: { Physical: 'Physical', Fire: 'Fire', Cold: 'Cold', Lightning: 'Lightning', Poison: 'Poison', Aether: 'Aether', Chaos: 'Chaos', Pierce: 'Pierce', Vitality: 'Vitality', Elemental: 'Elemental', Bleeding: 'Bleeding' },
   dirShort: { damage: '+Dmg', resist: '+Res', retaliation: 'Ret' },
   modal: {

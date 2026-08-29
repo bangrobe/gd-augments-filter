@@ -35,9 +35,11 @@ export default function App() {
     const all = data.augments;
     const uniqSplit = (k) => [...new Set(all.map((a) => a[k]).filter(Boolean).flatMap((v) => String(v).split(',')))];
     const slot = uniqSplit('slot_group').sort();
-    const exp = ['gdx1', 'gdx2', 'gdx3']
+    const exp = ['base', 'gdx1', 'gdx2', 'gdx3']
       .map((k) => ({ k, v: t(`expansionName.${k}`) }))
-      .filter((e) => all.some((a) => (a.expansions || '').split(',').includes(e.k)));
+      .filter((e) => e.k === 'base'
+        ? all.some((a) => !a.expansions)
+        : all.some((a) => (a.expansions || '').split(',').includes(e.k)));
     const faction = uniqSplit('factions').map((k) => ({ k, v: FACTION_NAME[k] || k })).sort((a, b) => a.v.localeCompare(b.v));
     const ilvl = [...new Set(all.map((a) => a.item_level))].sort((a, b) => a - b);
     return { slot, rarity: ['Magical', 'Rare', 'Epic', 'Legendary'], exp, faction, ilvl, dmgType: DMG_TYPES };
@@ -50,7 +52,7 @@ export default function App() {
       if (q && !(a.name || '').toLowerCase().includes(q) && !a.id.includes(q)) return false;
       if (f.slot.length && !(a.slot_group || '').split(',').some((s) => f.slot.includes(s))) return false;
       if (f.rarity.length && !f.rarity.includes(a.rarity)) return false;
-      if (f.exp.length && !(a.expansions || '').split(',').some((e) => f.exp.includes(e))) return false;
+      if (f.exp.length && !f.exp.some((e) => e === 'base' ? !a.expansions : (a.expansions || '').split(',').includes(e))) return false;
       if (f.faction.length && !(a.factions || '').split(',').some((x) => f.faction.includes(x))) return false;
       if (f.ilvl && Number(a.item_level) !== Number(f.ilvl)) return false;
       if (f.stat && !(a.raw || '').includes(f.stat)) return false;
