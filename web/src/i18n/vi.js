@@ -30,6 +30,7 @@ export default {
     damage: 'Tăng damage (gây sát thương)',
     resist: 'Tăng kháng (giảm sát thương nhận)',
     retaliation: 'Phản damage (retaliation)',
+    pet: 'Tăng pet damage',
   },
   rarity: { Magical: 'Magical', Rare: 'Rare', Epic: 'Epic', Legendary: 'Legendary' },
   expansionName: { base: 'Game gốc', gdx1: 'Ashes of Malmouth', gdx2: 'Forgotten Gods', gdx3: 'Fangs of Asterkarn' },

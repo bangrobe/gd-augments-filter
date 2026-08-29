@@ -68,7 +68,7 @@ export default function FilterPanel({ f, setF, opts, onClose }) {
       </Section>
       <Section title={t('group.dir')}>
         <div className="space-y-0.5">
-          {['damage', 'resist', 'retaliation'].map((d) => (
+          {['damage', 'resist', 'retaliation', 'pet'].map((d) => (
             <label key={d} className="flex items-center gap-2 py-0.5 text-sm cursor-pointer hover:text-grim-accent">
               <input type="checkbox" checked={f.dir.includes(d)} onChange={() => toggleDir(d)} className="accent-grim-accent" />
               <span>{t(`dir.${d}`)}</span>

@@ -61,11 +61,19 @@ export default function App() {
       if (f.stat && !(a.raw || '').includes(f.stat)) return false;
       if (f.type.length || f.dir.length) {
         const eff = a.effects || [];
+        // 'pet' is a special direction — matches augments that have pet_stats with damage modifier
+        const hasPetDmg = f.dir.includes('pet') && (a.pet_stats || []).some(
+          (p) => p.key === 'offensiveTotalDamageModifier' && p.value > 0
+        );
         if (f.type.length && f.dir.length) {
-          if (!eff.some((e) => { const [t1, d1] = e.split(':'); return f.type.includes(t1) && f.dir.includes(d1); })) return false;
+          const typeMatch = eff.some((e) => { const [t1, d1] = e.split(':'); return f.type.includes(t1) && f.dir.includes(d1); });
+          if (!typeMatch && !hasPetDmg) return false;
         } else if (f.type.length) {
           if (!eff.some((e) => f.type.includes(e.split(':')[0]))) return false;
-        } else if (!eff.some((e) => f.dir.includes(e.split(':')[1]))) return false;
+        } else {
+          const dirMatch = eff.some((e) => f.dir.includes(e.split(':')[1]));
+          if (!dirMatch && !hasPetDmg) return false;
+        }
       }
       return true;
     });

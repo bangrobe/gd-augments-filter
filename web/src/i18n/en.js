@@ -30,6 +30,7 @@ export default {
     damage: 'Increase damage (deal)',
     resist: 'Increase resistance (mitigate)',
     retaliation: 'Retaliate damage',
+    pet: 'Increase pet damage',
   },
   rarity: { Magical: 'Magical', Rare: 'Rare', Epic: 'Epic', Legendary: 'Legendary' },
   expansionName: { base: 'Base Game', gdx1: 'Ashes of Malmouth', gdx2: 'Forgotten Gods', gdx3: 'Fangs of Asterkarn' },
