@@ -1,0 +1,24 @@
+# Build artifacts & raw data (regenerate from grimtools scrape + build_db.py)
+augments.js
+augments_parsed.json
+augments_raw.html
+db.js
+itemdb.js
+l10n_en.js
+common.js
+grimdawn_augments.db
+
+# Web subproject
+web/node_modules/
+web/dist/
+
+# Editor
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Misc
+*.log
+.env
+.env.local

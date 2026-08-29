@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+/* Dark theme tokens — extend Tailwind palette */
+@theme {
+  --color-grim-bg: #15171a;
+  --color-grim-card: #1e2125;
+  --color-grim-border: #2c3038;
+  --color-grim-fg: #e6e6e6;
+  --color-grim-muted: #9aa0a8;
+  --color-grim-accent: #7fb2e6;
+  --color-grim-warm: #e6b37f;
+  --color-grim-r: #c9a0ff;
+  --color-grim-s: #7fb2e6;
+  --color-grim-f: #e6b37f;
+  /* Expansion card backgrounds (subtle tint, keep card readable) */
+  --color-aom-bg: #16321e;       /* Ashes of Malmouth — green */
+  --color-aom-border: #2c5a3a;
+  --color-fog-bg: #3a2f15;       /* Forgotten Gods — yellow/gold */
+  --color-fog-border: #6b5424;
+  --color-foa-bg: #15303a;       /* Fangs of Asterkarn — bright blue */
+  --color-foa-border: #2a5666;
+  /* Rarity placeholder box backgrounds (Grim Dawn in-game colors) */
+  --color-rarity-magical-bg: #5a4a16;        /* yellow */
+  --color-rarity-magical-border: #8a7224;
+  --color-rarity-magical-fg: #f4d76a;
+  --color-rarity-rare-bg: #1f4a26;           /* green */
+  --color-rarity-rare-border: #3a7a4a;
+  --color-rarity-rare-fg: #7adf93;
+  --color-rarity-epic-bg: #1d3a5a;           /* blue */
+  --color-rarity-epic-border: #346b9c;
+  --color-rarity-epic-fg: #82b8f0;
+  --color-rarity-legendary-bg: #3a1f5a;      /* purple */
+  --color-rarity-legendary-border: #6834a3;
+  --color-rarity-legendary-fg: #c79af0;
+}
+
+/* Custom scrollbar — slim, dark, matches theme */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-grim-border) transparent;
+}
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background-color: var(--color-grim-border);
+  border-radius: 4px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-grim-muted);
+  background-clip: padding-box;
+  border: 2px solid transparent;
+}
+*::-webkit-scrollbar-corner {
+  background: transparent;
+}

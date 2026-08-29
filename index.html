@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tra cứu Grim Dawn Augments</title>
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.10/dist/cdn.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/sql.js@1.10.3/dist/sql-wasm.js"></script>
+<style>
+  :root{--bg:#15171a;--card:#1e2125;--border:#2c3038;--fg:#e6e6e6;--muted:#9aa0a8;--accent:#7fb2e6;--accent2:#e6b37f}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.5 -apple-system,Segoe UI,Roboto,sans-serif}
+  header{padding:16px 20px;border-bottom:1px solid var(--border);background:#101214}
+  header h1{margin:0;font-size:18px}
+  header .sub{color:var(--muted);font-size:12px}
+  .wrap{display:flex;gap:16px;padding:16px;max-width:1400px;margin:0 auto}
+  .filters{width:260px;flex:0 0 260px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px}
+  .filters h3{margin:0 0 6px;font-size:13px;color:var(--accent);text-transform:uppercase;letter-spacing:.5px}
+  .fgroup{margin-bottom:14px;border-bottom:1px solid var(--border);padding-bottom:12px}
+  .fgroup:last-child{border-bottom:0}
+  label.chk{display:block;padding:3px 0;cursor:pointer;font-size:13px}
+  label.chk input{margin-right:7px;accent-color:var(--accent)}
+  .search{width:100%;padding:8px 10px;background:#101214;border:1px solid var(--border);border-radius:7px;color:var(--fg)}
+  select{width:100%;padding:7px;background:#101214;border:1px solid var(--border);border-radius:7px;color:var(--fg);margin-top:4px}
+  .results{flex:1;min-width:0}
+  .count{color:var(--muted);margin-bottom:10px;font-size:13px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+  .item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px;cursor:pointer;transition:.15s}
+  .item:hover{border-color:var(--accent);transform:translateY(-2px)}
+  .item .name{font-weight:600;font-size:15px;margin-bottom:2px}
+  .badges{display:flex;flex-wrap:wrap;gap:5px;margin:7px 0}
+  .b{font-size:11px;padding:2px 7px;border-radius:20px;background:#101214;border:1px solid var(--border);color:var(--muted)}
+  .b.r{color:#c9a0ff;border-color:#453a5e}
+  .b.s{color:#7fb2e6;border-color:#2c4055}
+  .b.f{color:#e6b37f;border-color:#553f2c}
+  .stats{font-size:12px;color:var(--muted);max-height:60px;overflow:hidden}
+  .stats.exp{display:flex;flex-direction:column;max-height:none}
+  .stat{display:flex;justify-content::space-between;gap:10px}
+  .stat .k{color:var(--accent2)}
+  .empty{padding:40px;text-align:center;color:var(--muted)}
+  .modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:20px;z-index:50}
+  .modal .box{background:var(--card);border:1px solid var(--border);border-radius:12px;max-width:560px;width:100%;max-height:84vh;overflow:auto;padding:20px}
+  .modal h2{margin:0 0 4px}
+  .close{float:right;cursor:pointer;color:var(--muted);font-size:20px;line-height:1}
+  .loading{padding:60px;text-align:center;color:var(--muted)}
+  a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div x-data="app()" x-init="init()">
+  <header>
+    <h1>Grim Dawn — Tra cứu Augments</h1>
+    <div class="sub">Dữ liệu 376 augments từ grimtools itemdb • bộ lọc theo slot, rarity, faction, expansion, item level & chỉ số • Game version: <b x-text="gameVersion"></b></div>
+  </header>
+
+  <div class="wrap" x-show="ready">
+    <!-- FILTERS -->
+    <aside class="filters">
+      <div class="fgroup">
+        <h3>Tìm kiếm</h3>
+        <input class="search" type="text" placeholder="Tên augment…" x-model="q" @input.debounce.200ms="apply()">
+      </div>
+      <div class="fgroup">
+        <h3>Slot</h3>
+        <template x-for="o in opts.slot" :key="o"><label class="chk"><input type="checkbox" :value="o" x-model="f.slot" @change="apply()"> <span x-text="o"></span></label></template>
+      </div>
+      <div class="fgroup">
+        <h3>Rarity</h3>
+        <template x-for="o in opts.rarity" :key="o"><label class="chk"><input type="checkbox" :value="o" x-model="f.rarity" @change="apply()"> <span x-text="o"></span></label></template>
+      </div>
+      <div class="fgroup">
+        <h3>Expansion</h3>
+        <template x-for="o in opts.exp" :key="o.k"><label class="chk"><input type="checkbox" :value="o.k" x-model="f.exp" @change="apply()"> <span x-text="o.v"></span></label></template>
+      </div>
+      <div class="fgroup">
+        <h3>Faction</h3>
+        <template x-for="o in opts.faction" :key="o.k"><label class="chk"><input type="checkbox" :value="o.k" x-model="f.faction" @change="apply()"> <span x-text="o.v"></span></label></template>
+      </div>
+      <div class="fgroup">
+        <h3>Loại sát thương</h3>
+        <template x-for="o in opts.dmgType" :key="o"><label class="chk"><input type="checkbox" :value="o" x-model="f.type" @change="apply()"> <span x-text="o"></span></label></template>
+      </div>
+      <div class="fgroup">
+        <h3>Hướng tác động</h3>
+        <label class="chk"><input type="checkbox" value="damage" x-model="f.dir" @change="apply()"> Tăng damage (gây sát thương)</label>
+        <label class="chk"><input type="checkbox" value="resist" x-model="f.dir" @change="apply()"> Tăng kháng (giảm sát thương nhận)</label>
+        <label class="chk"><input type="checkbox" value="retaliation" x-model="f.dir" @change="apply()"> Phản damage (retaliation)</label>
+      </div>
+      <div class="fgroup">
+        <h3>Item Level</h3>
+        <select x-model="f.ilvl" @change="apply()">
+          <option value="">Tất cả</option>
+          <template x-for="o in opts.ilvl" :key="o"><option :value="o" x-text="o"></option></template>
+        </select>
+      </div>
+      <div class="fgroup">
+        <h3>Chỉ số kỹ thuật</h3>
+        <input class="search" type="text" placeholder="vd: offensiveFireModifier" x-model="f.stat" @input.debounce.200ms="apply()">
+      </div>
+      <button class="search" style="cursor:pointer" @click="reset()">Xóa bộ lọc</button>
+    </aside>
+
+    <!-- RESULTS -->
+    <main class="results">
+      <div class="count"><span x-text="filtered.length"></span> augment(s) khớp</div>
+      <div class="grid">
+        <template x-for="a in pageItems()" :key="a.id">
+          <div class="item" @click="open(a)">
+            <div class="name" x-text="a.name || a.id"></div>
+            <div class="badges">
+              <span class="b r" x-text="a.rarity"></span>
+              <span class="b s" x-text="a.slot_group"></span>
+              <span class="b" x-text="'iLvl '+a.item_level"></span>
+              <template x-for="e in a.expansion_names.split(',')" :key="e"><span class="b f" x-text="e"></span></template>
+            </div>
+            <div class="badges">
+              <template x-for="e in (a.effects||[]).slice(0,5)" :key="e"><span class="b" :class="effClass(e)" x-text="effLabel(e)"></span></template>
+            </div>
+            <div class="stats" x-html="previewStats(a)"></div>
+          </div>
+        </template>
+      </div>
+      <div class="empty" x-show="!filtered.length">Không có augment nào khớp bộ lọc.</div>
+      <div style="margin-top:14px;text-align:center" x-show="filtered.length > pageSize">
+        <button class="search" style="cursor:pointer;width:auto;padding:6px 16px" @click="page++" x-show="page*pageSize < filtered.length">Tải thêm</button>
+      </div>
+    </main>
+  </div>
+
+  <div class="loading" x-show="!ready" x-text="loadingMsg"></div>
+
+  <!-- MODAL -->
+  <div class="modal" x-show="sel" @click.self="sel=null" style="display:none">
+    <div class="box" x-show="sel">
+      <span class="close" @click="sel=null">×</span>
+      <h2 x-text="sel?.name || sel?.id"></h2>
+      <div class="badges">
+        <span class="b r" x-text="sel?.rarity"></span>
+        <span class="b s" x-text="sel?.slot_group"></span>
+        <span class="b" x-text="'iLvl '+sel?.item_level"></span>
+      </div>
+      <p style="color:var(--muted)" x-text="sel?.description"></p>
+      <div class="badges">
+        <template x-for="s in (sel?.slots||'').split(',')" :key="s"><span class="b" x-text="s"></span></template>
+      </div>
+      <p style="font-size:12px;color:var(--muted)">
+        <span x-show="sel?.faction_names">Faction: <b x-text="sel?.faction_names"></b> (<span x-text="sel?.rep_tier_name"></span>)<br></span>
+        <span x-show="sel?.expansion_names">Expansion: <b x-text="sel?.expansion_names"></b><br></span>
+        <span x-show="sel?.untradeable">Không thể giao dịch</span>
+      </p>
+      <h3 style="color:var(--accent);margin:14px 0 6px;font-size:13px">LOẠI SÁT THƯƠNG</h3>
+      <div class="badges">
+        <template x-for="e in (sel?.effects||[])" :key="e"><span class="b" :class="effClass(e)" x-text="effLabel(e)"></span></template>
+        <span x-show="!(sel?.effects||[]).length" style="color:var(--muted);font-size:12px">Không có chỉ số theo loại sát thương</span>
+      </div>
+      <h3 style="color:var(--accent);margin:14px 0 6px;font-size:13px">CHỈ SỐ</h3>
+      <div class="stats exp">
+        <template x-for="st in detailStats(sel)" :key="st">
+          <div x-text="st"></div>
+        </template>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const DB_URL = "grimdawn_augments.db";
+function app(){
+  return {
+    ready:false, loadingMsg:"Đang tải cơ sở dữ liệu…", gameVersion:"",
+    all:[], filtered:[], sel:null, page:1, pageSize:60, q:"",
+    f:{slot:[],rarity:[],exp:[],faction:[],ilvl:"",stat:"",type:[],dir:[]},
+    opts:{slot:[],rarity:[],exp:[],faction:[],ilvl:[],dmgType:["Physical","Fire","Cold","Lightning","Poison","Aether","Chaos","Pierce","Vitality","Elemental","Bleeding"]},
+    async init(){
+      try{
+        const SQL = await initSqlJs({locateFile:f=>"https://cdn.jsdelivr.net/npm/sql.js@1.10.3/dist/"+f});
+        const buf = await (await fetch(DB_URL)).arrayBuffer();
+        const db = new SQL.Database(new Uint8Array(buf));
+        const rows = db.exec("SELECT * FROM augments");
+        const cols = rows[0].columns, data = rows[0].values;
+        this.all = data.map(r=>{const o={};cols.forEach((c,i)=>o[c]=r[i]);o.effects=[];o.stats=[];return o;});
+        // attach damage-type effects from augment_effects table
+        const er = db.exec("SELECT augment_id, damage_type, direction FROM augment_effects");
+        if(er.length){
+          const ec=er[0].columns, ev=er[0].values, idx={};
+          ec.forEach((c,i)=>idx[c]=i);
+          const byId={};
+          ev.forEach(r=>{const id=r[idx.augment_id];(byId[id]=byId[id]||[]).push(r[idx.damage_type]+":"+r[idx.direction]);});
+          this.all.forEach(a=>{ if(byId[a.id]) a.effects=byId[a.id]; });
+        }
+        // attach player-friendly stat labels from augment_stats table
+        const sr = db.exec("SELECT augment_id, label FROM augment_stats");
+        if(sr.length){
+          const sc=sr[0].columns, sv=sr[0].values, sidx={};
+          sc.forEach((c,i)=>sidx[c]=i);
+          const byId={};
+          sv.forEach(r=>{const id=r[sidx.augment_id];(byId[id]=byId[id]||[]).push(r[sidx.label] || r[sidx.label_vi]);});
+          this.all.forEach(a=>{ if(byId[a.id]) a.stats=byId[a.id]; });
+        }
+        // build option lists
+        const uniq = k => [...new Set(this.all.map(a=>a[k]).filter(Boolean))].flatMap(v=>v?String(v).split(","):[]);
+        this.opts.slot = [...new Set(uniq("slot_group"))].sort();
+        this.opts.rarity = ["Magical","Rare","Epic","Legendary"];
+        this.opts.exp = [{k:"gdx1",v:"Ashes of Malmouth"},{k:"gdx2",v:"Forgotten Gods"},{k:"gdx3",v:"Fangs of Asterkarn"}];
+        this.opts.faction = [...new Set(uniq("factions"))].map(k=>({k,v:this.factionName(k)})).sort((a,b)=>a.v.localeCompare(b.v));
+        this.opts.ilvl = [...new Set(this.all.map(a=>+a.item_level))].sort((a,b)=>a-b);
+        const mv = db.exec("SELECT value FROM meta WHERE key='game_version'");
+        this.gameVersion = mv.length ? mv[0].values[0][0] : "unknown";
+        this.ready=true; this.apply();
+      }catch(e){ this.loadingMsg="Lỗi tải DB: "+e.message; }
+    },
+    factionName(k){
+      const m={"f1":"Devil's Crossing","f2":"Kymon's Chosen","f3":"The Outcast","f4":"House of Valor",
+        "f5":"Order of Death's Vigil","f6":"Circle of Cunning","f7":"Beastmaster's Treasure","f8":"Coven of Ugdenbog",
+        "f9":"Black Legion","f10":"Scholars of Luminerr","f11":"Sentinels of Stone","f12":"Eternal Band",
+        "f13":"Bodukon's Wrath","f14":"Shrine of the Dread","f15":"Faction of Asterkarn"};
+      return m[k]||k;
+    },
+    apply(){
+      const q=this.q.toLowerCase();
+      this.filtered = this.all.filter(a=>{
+        if(q && !(a.name||"").toLowerCase().includes(q) && !a.id.includes(q)) return false;
+        if(this.f.slot.length && !a.slot_group.split(",").some(s=>this.f.slot.includes(s))) return false;
+        if(this.f.rarity.length && !this.f.rarity.includes(a.rarity)) return false;
+        if(this.f.exp.length && !a.expansions.split(",").some(e=>this.f.exp.includes(e))) return false;
+        if(this.f.faction.length && !a.factions.split(",").some(x=>this.f.faction.includes(x))) return false;
+        if(this.f.ilvl && +a.item_level!==+this.f.ilvl) return false;
+        if(this.f.stat && !(a.raw||"").includes(this.f.stat)) return false;
+        // damage-type + direction filter — match theo CẶP (type + direction cùng một effect)
+        if(this.f.type.length || this.f.dir.length){
+          const eff = a.effects||[];
+          if(this.f.type.length && this.f.dir.length){
+            // cả hai: cần có effect thoả mãn CẢ type VÀ direction (cùng cặp)
+            if(!eff.some(e=>{const[t,d]=e.split(":");return this.f.type.includes(t)&&this.f.dir.includes(d);})) return false;
+          } else if(this.f.type.length){
+            if(!eff.some(e=>this.f.type.includes(e.split(":")[0]))) return false;
+          } else {
+            if(!eff.some(e=>this.f.dir.includes(e.split(":")[1]))) return false;
+          }
+        }
+        return true;
+      });
+      this.page=1;
+    },
+    pageItems(){ return this.filtered.slice(0, this.page*this.pageSize); },
+    previewStats(a){
+      const stats = (a.stats||[]).slice(0,4);
+      return stats.map(s=>`<div>${s}</div>`).join("");
+    },
+    detailStats(a){ return (a && a.stats) ? a.stats : []; },
+    fmt(v){
+      if(typeof v!=="number") return v;
+      return Number.isInteger(v)?v:(+v.toFixed(2));
+    },
+    effLabel(e){ const [t,d]=e.split(":"); const dir={damage:"+Dmg",resist:"+Res",retaliation:"Ret"}[d]||""; return t+" "+dir; },
+    effClass(e){ const d=e.split(":")[1]; return d==="damage"?"b r":d==="resist"?"b s":""; },
+    open(a){ this.sel=a; },
+    reset(){ this.q="";this.f={slot:[],rarity:[],exp:[],faction:[],ilvl:"",stat:"",type:[],dir:[]};this.apply(); }
+  };
+}
+</script>
+</body>
+</html>
