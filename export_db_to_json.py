@@ -30,7 +30,7 @@ def main():
     rows = con.execute(
         "SELECT id, name, rarity, item_level, slot_group, slots, factions, faction_names,"
         " expansions, expansion_names, rep_tier, rep_tier_name, description, cls,"
-        " untradeable, raw, has_damage, has_resist, has_retaliation"
+        " untradeable, raw, sold_by, has_damage, has_resist, has_retaliation"
         " FROM augments ORDER BY item_level, name"
     ).fetchall()
 
@@ -72,6 +72,7 @@ def main():
                 "cls": row["cls"],
                 "untradeable": row["untradeable"],
                 "raw": row["raw"],
+                "sold_by": (json.loads(row["sold_by"]) if row["sold_by"] else []),
                 "has_damage": row["has_damage"],
                 "has_resist": row["has_resist"],
                 "has_retaliation": row["has_retaliation"],
