@@ -69,6 +69,18 @@ export default function AugmentModal({ a, onClose }) {
           <div className="text-sm text-grim-fg space-y-0.5">
             {stats.map((s, i) => <div key={i}>{s}</div>)}
           </div>
+          {(a.pet_stats || []).length > 0 && (
+            <>
+              <h3 className="text-grim-accent text-xs uppercase tracking-wider font-semibold mt-3 mb-1.5">
+                {t('modal.petBonusHdr')}
+              </h3>
+              <div className="text-sm text-grim-fg space-y-0.5">
+                {a.pet_stats.map((p, i) => (
+                  <div key={i}>{lang === 'en' ? p.label_en : p.label_vi}</div>
+                ))}
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>

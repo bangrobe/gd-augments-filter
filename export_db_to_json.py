@@ -46,6 +46,19 @@ def main():
                 (row["id"],),
             )
         ]
+        pet_stats = [
+            {
+                "key": p["stat_key"],
+                "value": p["stat_value"],
+                "label_vi": p["label_vi"],
+                "label_en": p["label_en"],
+            }
+            for p in con2.execute(
+                "SELECT stat_key, stat_value, label_vi, label_en FROM augment_pet_stats"
+                " WHERE augment_id=? ORDER BY rowid",
+                (row["id"],),
+            )
+        ]
         effects = [
             f"{e['damage_type']}:{e['direction']}"
             for e in con2.execute(
@@ -78,6 +91,7 @@ def main():
                 "has_retaliation": row["has_retaliation"],
                 "effects": effects,
                 "stats": stats,
+                "pet_stats": pet_stats,
             }
         )
 

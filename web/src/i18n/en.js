@@ -47,6 +47,7 @@ export default {
     close: 'Close',
     readMore: 'Read all',
     readLess: 'Collapse',
+    petBonusHdr: 'PET BONUS (Bonus to All Pets)',
   },
   card: {
     moreStats: '+{n} more stats — open to view',
