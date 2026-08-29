@@ -43,6 +43,7 @@ export default {
     dmgTypeHdr: 'DAMAGE TYPES',
     statsHdr: 'STATS',
     noDmg: 'No damage-type stats',
+    soldBy: 'Can be sold by',
     close: 'Close',
     readMore: 'Read all',
     readLess: 'Collapse',

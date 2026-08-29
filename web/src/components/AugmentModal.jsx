@@ -44,6 +44,19 @@ export default function AugmentModal({ a, onClose }) {
           <div className="text-xs text-grim-muted mb-3">
             {a.faction_names && <div>{t('modal.faction')}: <b className="text-grim-fg">{a.faction_names}</b> ({a.rep_tier_name})</div>}
             {a.untradeable ? <div className="text-grim-warm">{t('modal.untradeable')}</div> : null}
+            {a.sold_by && a.sold_by.length > 0 && (
+              <div className="mt-1">
+                {t('modal.soldBy')}:{' '}
+                <span className="text-grim-fg">
+                  {a.sold_by.map((v, i) => (
+                    <span key={i}>
+                      {i > 0 && ', '}
+                      <b>{v.name}</b>{v.location ? ` (${v.location})` : ''}
+                    </span>
+                  ))}
+                </span>
+              </div>
+            )}
           </div>
           <h3 className="text-grim-accent text-xs uppercase tracking-wider font-semibold mt-3 mb-1.5">{t('modal.dmgTypeHdr')}</h3>
           <div className="flex flex-wrap gap-1 mb-3">

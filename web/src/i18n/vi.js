@@ -43,6 +43,7 @@ export default {
     dmgTypeHdr: 'LOẠI SÁT THƯƠNG',
     statsHdr: 'CHỈ SỐ',
     noDmg: 'Không có chỉ số theo loại sát thương',
+    soldBy: 'Bán bởi',
     close: 'Đóng',
     readMore: 'Đọc toàn bộ',
     readLess: 'Thu gọn',
